@@ -17,7 +17,10 @@ create_asset_request = mux_python.CreateAssetRequest(playback_policy=[mux_python
 create_upload_request = mux_python.CreateUploadRequest(timeout=3600, new_asset_settings=create_asset_request, cors_origin="*")
 create_upload_response = uploads_api.create_direct_upload(create_upload_request)  
 
-@app.route('/')
+@app.route('/url')
 def hello_world():
-   
-   return (create_upload_response.data.url, create_upload_response.data.id)
+   return create_upload_response.data.url
+
+@app.route('/id')
+def id_world():
+   return create_upload_response.data.id
