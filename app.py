@@ -19,4 +19,5 @@ create_upload_response = uploads_api.create_direct_upload(create_upload_request)
 
 @app.route('/')
 def hello_world():
-   return create_upload_response.data.url
+   
+   return (create_upload_response.data.url, create_upload_response.data.id)
