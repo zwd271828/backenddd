@@ -1,21 +1,22 @@
 from flask import Flask
 import json
-import requests
+import mux_python
 
 app = Flask(__name__)
-url = "https://ws.api.video/auth/api-key"
 
-headers = {
-    "Accept": "application/json",
-    "Content-Type": "application/json"
-}
+MUX_TOKEN_ID='bbcb8911-562b-4b0a-bf4a-64de6bad9ffc'
+MUX_TOKEN_SECRET='PGCkpvE5ZtZ/wwwKBC+YpJnGV5ibxycaIoEaDsOpyMJJmfEuFMFvXEsFLv7pD9SSU2cnfPdT6o4'
 
-d = {
-    "apiKey": 'ZdSBGXrlXi5FrJYoYlg0uSAe7q4L8LpQC3mSRrwDtBF'
-}
+configuration = mux_python.Configuration()
+configuration.username = MUX_TOKEN_ID
+configuration.password = MUX_TOKEN_SECRET
+
+uploads_api = mux_python.DirectUploadsApi(mux_python.ApiClient(configuration))
+
+create_asset_request = mux_python.CreateAssetRequest(playback_policy=[mux_python.PlaybackPolicy.PUBLIC])
+create_upload_request = mux_python.CreateUploadRequest(timeout=3600, new_asset_settings=create_asset_request, cors_origin="*")
+create_upload_response = uploads_api.create_direct_upload(create_upload_request)  
 
 @app.route('/')
 def hello_world():
-   r = requests.post(url, data=json.dumps(d), headers=headers)
-   return json.loads(r.text)['access_token']
-
+   return create_upload_response.data.url
